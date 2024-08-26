@@ -1,0 +1,54 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    border: 2px solid yellow;
+    display: grid;
+    /* grid-template-areas: "nav nav nav nav" */
+        /* this basically means that the first the first row is divided into 4 columns and all 4 of them are named nav */
+        /* "main-content main-content empty sidebar"
+        "footer footer footer extra";
+         *//* 
+         grid-template-columns:1fr 1fr 1fr; /* fr is a unit which represents fractions of the whole unit */ */
+         grid-template-columns: repeat(4,minmax(100px,1fr));/* this means that it will be divided into 4 columns and each cell/block will be minimum 100 px and can go upto 1fr */
+         row-gap:33px;
+         column-gap: 28px;
+}   
+/* justify-content,allign-items wagera bhi chalte hai, baaki unn dono ko agar karna hai saath mein toh place-content */
+.item {
+    border: 2px solid red;
+    height: 55px;
+}
+
+.item-1 {
+    grid-area: nav;
+    background-color: aqua;
+}
+
+.item-2 {
+    grid-area: empty;
+    background-color: greenyellow;
+}
+
+.item-3 {
+    grid-area: footer;
+    background-color: blueviolet;
+}
+
+.item-4 {
+    grid-area: sidebar;
+    background-color: peachpuff;
+}
+
+.item-5 {
+    grid-area: main-content;
+    background-color: gray;
+}
+
+.item-6 {
+    grid-area: extra;
+    background-color: blue;
+}
