@@ -2,25 +2,24 @@ const express= require('express');
 const app= express();
 const morgan= require('morgan')
 /* Middleware for logging HTTP requests */
-app.use(morgan('common'))
-/* custom middleware to log a message */
+// app.use(morgan('common'))
 app.use((req,res,next)=>{
-    console.log("this is my first Middleware")
-    next();/* next moves to the next middleware */
-    console.log("this is my second middleware-after the first middleware")
-})
-app.use((req,res,next)=>{
-    console.log("this is my second middleware")
-    next();
-})
-app.get('/',(req,res)=>{
-    res.send("Home Page");
-console.log("this is my third middleware")
-})
-app.get('/dogs',(req,res)=>{
-    res.send("Home Page")
+    req.requestTime=Date.now()
+    console.log(req.method.toUpperCase(),req.path)
+next()  
 })
 
-app.listen(3000,()=>{
-    console.log("App is running on Port 3000")
+app.get('/',()=>{
+    console.log(`Request Date:${req.requestTime}`)
+    res.send('HOME PAGE')
+    
 })
+app.get('/dogs',()=>{
+
+    console.log(`Request Date:${req.requestTime}`)
+
+    res.send('WOOF WOOF!')
+})
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+  });
