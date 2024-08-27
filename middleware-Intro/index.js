@@ -3,8 +3,8 @@ const app= express();
 const morgan= require('morgan')
 /* Middleware for logging HTTP requests */
 app.use(morgan('common'))
-app.use(req,res,next=>{
-    if(req.path==='./secret'){/* so now you need password to open the secret route, the rest you are free to open without password */
+app.use((req,res,next)=>{
+    if(req.path==='/secret'){/* so now you need password to open the secret route, the rest you are free to open without password */
     const{password}=req.query
 if(password==='chickenNugget'){/* the correct password is chickenNugget */
     next();
