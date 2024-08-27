@@ -3,6 +3,9 @@ const app= express();
 const morgan= require('morgan')
 /* Middleware for logging HTTP requests */
 app.use(morgan('common'))
+app.use(req,res,next)=>{
+    const{password}=req.query
+}
 app.use((req,res,next)=>{
     req.requestTime=Date.now()
     console.log(req.method.toUpperCase(),req.path)
@@ -20,7 +23,7 @@ app.get('/dogs',(req,res)=>{
 })
 /* when no route matches then this middleware comes to use */
 app.use((req,res)=>{
-    res.send('Not found');
+    res.status(404).send('Not found');
 })
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
