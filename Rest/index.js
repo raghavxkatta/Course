@@ -25,18 +25,26 @@ const comments= [
         comment:'wooof woof woof'
     }
 ]
+
+// Route to display all comments
 app.get('/comments',(req,res)=>{
     res.render('comments/index',{comments})/* we are just gonna pass all the comments, so that file has access to all the comments */
 })
+// Route to display the form to add a new comment
 app.get('/comments/new',(req,res)=>{
 res.render('comments/new')  
 
 })
-
+app.get('comments/:id',(req,res)=>{
+    const{id}=req.params
+    comments.findById(id)
+    res.render('commments/show',{comments})
+})
+// Route to handle the form submission to add a new comment
 app.post('/comments',async(req,res)=>{
-    const {username, comment}=req.body
-    comments.push({username,comment})
-    res.redirect('/comments')
+    const {username, comment}=req.body // Extract the username and comment from the request body
+    comments.push({username,comment}) // Add the new comment to the comments array using the method
+    res.redirect('/comments') // Redirect to the '/comments' route to display the updated comments
 })
 app.listen('3000',()=>{
 console.log("server is running on port 3000")
