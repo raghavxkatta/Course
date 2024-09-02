@@ -1,9 +1,11 @@
 const express= require('express')
 const app = express()
 const path = require('path')
+const methodOverride=require('method-override')
 
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())/* middleware to parse json data from incoming requests */
+app.use(methodOverride('_method'))
 app.set('views',path.join(__dirname,'views'))/* sets the directory for the views (templates) used in the app,combines the current directory name (__dirname) with the views folder */
 app.set('view engine','ejs')
 
@@ -46,6 +48,11 @@ app.get('comments/:id',(req,res)=>{
     const{id}=req.params
     comments.findById(id)
     res.render('commments/show',{comments})
+})-
+app.get('/comments/:id/edit',(req,res)=>{
+const {id}= req.params
+const comment=comment.findById(id)
+res.render('comments/edit',{comment})
 })
 app.patch('comments/:id',(req,res)=>{
     const {id}=req.params
@@ -54,6 +61,7 @@ app.patch('comments/:id',(req,res)=>{
     foundComment.comment=newCommonText
     res.redirect('comments/index')
 })
+app.
 app.listen('3000',()=>{
 console.log("server is running on port 3000")
 })
