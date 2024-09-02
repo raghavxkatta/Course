@@ -35,16 +35,24 @@ app.get('/comments/new',(req,res)=>{
 res.render('comments/new')  
 
 })
-app.get('comments/:id',(req,res)=>{
-    const{id}=req.params
-    comments.findById(id)
-    res.render('commments/show',{comments})
-})
+
 // Route to handle the form submission to add a new comment
 app.post('/comments',async(req,res)=>{
     const {username, comment}=req.body // Extract the username and comment from the request body
     comments.push({username,comment}) // Add the new comment to the comments array using the method
     res.redirect('/comments') // Redirect to the '/comments' route to display the updated comments
+})
+app.get('comments/:id',(req,res)=>{
+    const{id}=req.params
+    comments.findById(id)
+    res.render('commments/show',{comments})
+})
+app.patch('comments/:id',(req,res)=>{
+    const {id}=req.params
+    const newCommonText= req.body.comment
+    const foundComment= comments.findById(id)
+    foundComment.comment=newCommonText
+    res.redirect('comments/index')
 })
 app.listen('3000',()=>{
 console.log("server is running on port 3000")
