@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TV show search</title>
+    <title>TV Show Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <form id="searchForm" action="">
-    <h1>TV Show Search</h1>
-    <input type="text" placeholder="TV show title" name="query">
-    <button>Search</button>
-    </form>
+<body class="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">TV Show Search</h1>
+        <form id="searchForm" action="" class="space-y-4">
+            <div class="relative">
+                <input type="text" placeholder="Enter TV show title" name="query" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent">
+                <button type="submit" class="absolute right-2 top-1 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-300 ease-in-out">
+                    Search
+                </button>
+            </div>
+        </form>
+        <div id="results" class="mt-8 space-y-4"></div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
-<script src="app.js"></script>
-</body>
-</html>
+    <script src="app.js"></script>
+    <script>
