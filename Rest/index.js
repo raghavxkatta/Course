@@ -44,7 +44,7 @@ app.post('/comments',async(req,res)=>{
     comments.push({username,comment}) // Add the new comment to the comments array using the method
     res.redirect('/comments') // Redirect to the '/comments' route to display the updated comments
 })
-app.get('comments/:id',(req,res)=>{
+app.get('/comments/:id',(req,res)=>{
     const{id}=req.params
     comments.findById(id)
     res.render('commments/show',{comments})
@@ -54,14 +54,18 @@ const {id}= req.params
 const comment=comment.findById(id)
 res.render('comments/edit',{comment})
 })
-app.patch('comments/:id',(req,res)=>{
+app.patch('/comments/:id',(req,res)=>{
     const {id}=req.params
     const newCommonText= req.body.comment
     const foundComment= comments.findById(id)
     foundComment.comment=newCommonText
     res.redirect('comments/index')
 })
-app.
+app.delete('/comments/:id',(req,res)=>{
+        const {id}=req.params
+        const foundComment= comments.findById(id)
+
+})
 app.listen('3000',()=>{
 console.log("server is running on port 3000")
 })

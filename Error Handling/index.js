@@ -1,4 +1,4 @@
-    const express= require('express');
+const express= require('express');
 const app= express();
 const morgan= require('morgan')
 /* Middleware for logging HTTP requests */
@@ -27,11 +27,20 @@ app.get('/dogs',(req,res)=>{
 })
 app.get('/secret',verifyPassword,(req,res)=>{/* this route will only run when secret is the route and you have entered the correct password as query string */
     res.send("I have many secrets")
+    chicken.fly()/* I don't have a method fly and therefore that would cause an error which would run the error handling middleware */
     
 })
+
 /* when no route matches then this middleware comes to use */
 app.use((req,res)=>{
     res.status(404).send('Not found');
+})
+
+
+app.get('/error',(err,req,res,next)=>{
+    console.log("errrrorororo")
+    console.log("ERROR")
+    next(err)/* this will run the built in express error handler */
 })
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
