@@ -43,7 +43,7 @@ const { id } = req.params/* req.params is used when you want to extract somethin
 const foundProduct = await Product.findById(id)
 console.log(foundProduct)
 if(!product){
-    next( new AppError('Product not found',404))/* so instead of throwing the error you'll have to put it in next and that is how the error handler works */
+    next( new AppError('Product not found',404))/* so instead of throwing the error you'll have to put it in next and that is how the error handler works.*/
 }
 res.render('products/show', { product: foundProduct })/* you need to pass the array that you will use in the particular file */
 
