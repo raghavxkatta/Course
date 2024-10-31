@@ -38,12 +38,12 @@ res.render('products/new', { categories })/* .get is when the express checks if 
 
 
 // Route to display a single product
-app.get('/products/:id', async (req, res) => {/* we could have taken name as part of the url but because some names can be same and that can be problematic, we don't take it*/
+app.get('/products/:id', async (req, res,next) => {/* we could have taken name as part of the url but because some names can be same and that can be problematic, we don't take it*/
 const { id } = req.params/* req.params is used when you want to extract something from the url basically {destructuring the ID from the request parameter} */
 const foundProduct = await Product.findById(id)
 console.log(foundProduct)
 if(!product){
-    throw new AppError('Product not found',404)
+    next( new AppError('Product not found',404))/* so instead of throwing the error you'll have to put it in next and that is how the error handler works */
 }
 res.render('products/show', { product: foundProduct })/* you need to pass the array that you will use in the particular file */
 
