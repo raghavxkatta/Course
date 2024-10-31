@@ -63,6 +63,9 @@ res.redirect(`/products/${newProduct._id}`)/* this will redirect to the page whi
 app.get('/products/:id/edit', async (req, res) => {
 const { id } = req.params
 const product = await Product.findById(id)
+if(!product){
+    next( new AppError('Product not found',404))/* so instead of throwing the error you'll have to put it in next and that is how the error handler works.*/
+}
 res.render('products/edit', { product, categories })
 })
 app.put('/products/:id/edit', async (req, res) => {/* PUT AND PATCH REQUESTS ARE USED TO UPDATE EXISTING DATA */
