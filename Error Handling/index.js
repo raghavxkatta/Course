@@ -1,19 +1,23 @@
 const express= require('express');
 const app= express();
 const morgan= require('morgan')
-/* Middleware for logging HTTP requests */
-app.use(morgan('common'))
-const verifyPassword=((req,res,next)=>{
-    const{password}=req.query
-if(password==='chickennugget'){/* the correct password is chickenNugget */
-   return next();
-}
-return res.send("Sorry but you need a password")/* without the correct password in the query string, this will be the only thing being displayed and you won't be able to move ahead */
-})
+
+const AppError=require('./AppError')
+app.use(morgan('common'))/* Middleware for logging HTTP requests */
 app.use((req,res,next)=>{
     req.requestTime=Date.now()
     console.log(req.method.toUpperCase(),req.path)
 next()  
+})
+
+
+const verifyPassword=((req,res,next)=>{
+    const{password}=req.query
+    if(password==='chickennugget'){/* the correct password is chickenNugget */
+   return next();
+}
+throw new AppError('password require',401)
+
 })
 
 app.get('/',(req,res)=>{
@@ -27,13 +31,18 @@ app.get('/dogs',(req,res)=>{
 })
 app.get('/secret',verifyPassword,(req,res)=>{/* this route will only run when secret is the route and you have entered the correct password as query string */
     res.send("I have many secrets")
-    chicken.fly()/* I don't have a method fly and therefore that would cause an error which would run the error handling middleware */
+    chicken.fly()/* There is no method by the name of fly and therefore that would cause an error which would run the error handling middleware */
     
 })
 
+app.get('/admin',(req,res)=>{
+    throw new AppError('You are not an admin!',403)
+})
+
 /* when no route matches then this middleware comes to use */
-app.use((req,res)=>{
-    res.status(404).send('Not found');
+app.use((err,req,res,next)=>{
+    const {status=500, message='something went very Wrong'}=err
+res.status(status).send(message)
 })
 
 
