@@ -9,6 +9,12 @@ show.ejs=Template for displaying a single product */
 /* products-Variable holding an array of all product documents (e.g., used in the /products route). */
 /* product-Variable representing a single product document (e.g., used in the /products/:id route). */
 
+
+
+/* SO BASICALLY THIS IS A PATTERN WHERE IN AN ASYNCHRONUS FUNCTIONS , WE HAVE TO CALL NEXT WHICH WE WILL HAVE TO ADD NEXT AS A PARAMETER, WE CAN PASS ANYTHING INSIDE NEXT AND IF THERE IS A VALUE PASSED IN IT AT ALL, IT WILL TRIGGER THE NEXT ERROR HANDLER */
+
+
+
 const express = require('express');
 const app = express();
 const path = require('path')
