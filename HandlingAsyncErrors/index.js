@@ -21,15 +21,15 @@ const path = require('path')
 const Product = require('./models/product')/*basically Product is productSchema AND WOULD HELP YOU TO DO CRUD DOCUMENTS FROM THE PRODUCT COLLECTION*/
 const mongoose = require('mongoose');
 const methodOverride = require('method-override')/* Need to require this so that we are able to update items with put or patch request even though we are using forms */
-const AppError= require('./AppError')
+const AppError = require('./AppError')
 
 mongoose.connect('mongodb://127.0.0.1:27017/farmStand2')
-.then(() => {
-console.log("Mongo connection open!!!");
-})
-.catch((err) => {
-console.log("Mongo Connection error!!!", err);
-})
+    .then(() => {
+        console.log("Mongo connection open!!!");
+    })
+    .catch((err) => {
+        console.log("Mongo Connection error!!!", err);
+    })
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs')
@@ -39,74 +39,94 @@ app.use(methodOverride('_method'))
 const categories = ['vegetable', 'fruit', 'dairy', 'baked goods']
 
 app.get('/products/new', (req, res) => {/* since we don't have to do anything asynchronus here that's why we don't add async and await */
-res.render('products/new', { categories })/* .get is when the express checks if that particular url has a .get route and then runs it's code. res.render is to create a webpage using a template */
+    res.render('products/new', { categories })/* .get is when the express checks if that particular url has a .get route and then runs it's code. res.render is to create a webpage using a template */
 })
 
 
 // Route to display a single product
-app.get('/products/:id', async (req, res,next) => {/* we could have taken name as part of the url but because some names can be same and that can be problematic, we don't take it*/
-const { id } = req.params/* req.params is used when you want to extract something from the url basically {destructuring the ID from the request parameter} */
-const foundProduct = await Product.findById(id)
-console.log(foundProduct)
-if(!product){
-    next( new AppError('Product not found',404))/* so instead of throwing the error you'll have to put it in next and that is how the error handler works.*/
-}
-res.render('products/show', { product: foundProduct })/* you need to pass the array that you will use in the particular file */
-
+app.get('/products/:id', async (req, res, next) => {/* we could have taken name as part of the url but because some names can be same and that can be problematic, we don't take it*/
+    try {
+        const { id } = req.params/* req.params is used when you want to extract something from the url basically {destructuring the ID from the request parameter} */
+        const foundProduct = await Product.findById(id)
+        console.log(foundProduct)
+        if (!product) {
+            next(new AppError('Product not found', 404))/* so instead of throwing the error you'll have to put it in next and that is how the error handler works.*/
+        }
+        res.render('products/show', { product: foundProduct })/* you need to pass the array that you will use in the particular file */
+    }
+    catch (e) {
+        next(e)
+    }
 })
 
 
 // Route to display the form for editing an existing product
-app.post('/products', async (req, res) => {/* well in this case we don't have access to req.body, I mean we do but it's just undefined, there's nothing there it needs to be parsed */
-const newProduct = new Product(req.body)/* the data that we submit in the "new " route, when we click submit it is going to create a new product using that data */
-await newProduct.save()
-console.log(newProduct)
-res.redirect(`/products/${newProduct._id}`)/* this will redirect to the page which will have the data of the new product we just entered */
+app.post('/products', async (req, res, next) => {/* well in this case we don't have access to req.body, I mean we do but it's just undefined, there's nothing there it needs to be parsed */
+    try {
+        const newProduct = new Product(req.body)/* the data that we submit in the "new " route, when we click submit it is going to create a new product using that data */
+        await newProduct.save()
+        console.log(newProduct)
+        res.redirect(`/products/${newProduct._id}`)/* this will redirect to the page which will have the data of the new product we just entered */
+    }
+    catch (e) {
+        next(e)
+    }
 })
 
 
 // Route to update an existing product
-app.get('/products/:id/edit', async (req, res) => {
-const { id } = req.params
-const product = await Product.findById(id)
-if(!product){
-    next( new AppError('Product not found',404))/* so instead of throwing the error you'll have to put it in next and that is how the error handler works.*/
-}
-res.render('products/edit', { product, categories })
+app.get('/products/:id/edit', async (req, res, next) => {
+    const { id } = req.params
+    const foundProduct = await Product.findById(id)
+    if (!foundProduct) {
+        next(new AppError('Product not found', 404))/* so instead of throwing the error you'll have to put it in next and that is how the error handler works.*/
+    }
+    res.render('products/edit', { product: foundProduct, categories })
 })
-app.put('/products/:id/edit', async (req, res) => {/* PUT AND PATCH REQUESTS ARE USED TO UPDATE EXISTING DATA */
-const { id } = req.params/* THE PROBLEM IS THAT WE CAN'T ACTUALLY MAKE A PUT OR A PATCH REQUEST FROM A FORM, THE REASON WHY WE USED methodOverride */
-const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })/* runValidators because mongoose methods forgoes the validators */
-// Alternate way to do the above:
+app.put('/products/:id/edit', async (req, res, next) => {/* PUT AND PATCH REQUESTS ARE USED TO UPDATE EXISTING DATA */
 
-res.redirect(`/products/${product._id}`)/* we could have just referenced id but that would have broke the code because there is a await in the former line and therefore we have added product._id so that it awaits until product is found and then redirects */
-})
-app.delete('/products/:id', async (req, res) => {/* so now because of method override we can now add DELETE request in an HTML file */
-const { id } = req.params;
-const deletedProduct = await Product.findByIdAndDelete(id)
-res.redirect('/products')
-})
-app.get('/products', async (req, res) => {
+    try {
+        const { id } = req.params/* THE PROBLEM IS THAT WE CAN'T ACTUALLY MAKE A PUT OR A PATCH REQUEST FROM A FORM, THE REASON WHY WE USED methodOverride */
+        const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })/* runValidators because mongoose methods forgoes the validators */
+        // Alternate way to do the above:
 
-    throw new AppError('Not Allowed', 401)
-const { category } = req.query/* this is because to filter we usually add the stuff after the question mark as a query */
-if (category) {// Find products by category
-const products = await Product.find({ category })
-/* * we are passing category too because it needs to be displayed during filtering */
-}
-else{
-const products= await Product.find({})
-
-}
-res.render('products/index',{products,category:category||'All'})
+        res.redirect(`/products/${product._id}`)/* we could have just referenced id but that would have broke the code because there is a await in the former line and therefore we have added product._id so that it awaits until product is found and then redirects */
+    }
+    catch (e) {/* so if there is some error like if the person forgets to fill a box while editing a campground then it would trigger the catch which leads to the next and the next goes to the next middleware error handler */
+        next(e)
+    }
 })
 
-app.use((err,req,res,next)=>{
-    const {status=500, message='Something went wrong'}=err
+app.delete('/products/:id', async (req, res, next) => {/* so now because of method override we can now add DELETE request in an HTML file */
+    try {
+        const { id } = req.params;
+        const deletedProduct = await Product.findByIdAndDelete(id)
+        res.redirect('/products')
+    }
+    catch (e) {
+        next(e)
+    }
+})
+app.get('/products', async (req, res, next) => {
+
+    const { category } = req.query/* this is because to filter we usually add the stuff after the question mark as a query */
+    if (category) {// Find products by category
+        const products = await Product.find({ category })
+        /* * we are passing category too because it needs to be displayed during filtering */
+    }
+    else {
+        const products = await Product.find({})
+
+    }
+    res.render('products/index', { products, category: category || 'All' })
+})
+
+app.use((err, req, res, next) => {
+    const { status = 500, message = 'Something went wrong' } = err
     res.status(status).send(message)
 })
 
 app.listen(3000, () => {
-console.log("APP IS LISTENING ON PORT 3000!")
+    console.log("APP IS LISTENING ON PORT 3000!")
 })
 
