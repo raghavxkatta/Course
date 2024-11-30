@@ -19,4 +19,22 @@ country:String
         }
     ]
 })
+const User = mongoose.model('User',userSchema)
+
+const makeUser= async()=>{
+const u= new User({
+first:'Harry',
+last:'Singh'
+})
+u.addresses.push({
+    street:'123 Sesame Street',
+    city:'New York',
+    State:'NY',
+    country:'United States of America'
+})
+const res=await u.save()
+console.log(res)
+}
+makeUser();
+
 
