@@ -13,6 +13,8 @@ const userSchema = new mongoose.Schema({
     last: String,
     addresses: [
         {
+            /* so basically mongo treats this address as it's own embedded schema and therefore creates another seperate id for it */
+            _id:{ id: false},/* this stops the creation of id for address by mongo */
             street: String,
             city: String,
             State: String,
@@ -48,4 +50,6 @@ const addAddress = async (id) => {
     const res = await user.save();
     console.log(res);
 };
+
+addAddress('674f0006796779c56ce6999c');
 makeUser();
