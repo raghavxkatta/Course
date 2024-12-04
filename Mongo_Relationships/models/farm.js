@@ -14,8 +14,8 @@ mongoose
         price:Number,
         season:{
             type:String,
-            enum:['Spring','Summer','Fall','Winter']
-        }
+            enum:['spring','summer','fall','winter'],
+        },
     });
 
 
@@ -28,17 +28,17 @@ mongoose
     })
 
     const Product= mongoose.model('Product', productSchema)
-    const Farm= mongoose.model('Product', farmSchema)
+    const Farm= mongoose.model('Farm', farmSchema)
 
     Product.insertMany([
         {name:'Goddess Melon',price:4.99,season:'Summer'},
         {name:'Sugar Baby Watermelon',price:4.99,season:'Summer'},
         {name:'Asparagus',price:3.99,season:'Spring'}
-    ])
+    ]).then(()=>console.log("Products inserted"))       
 
 const makeFarm= async()=>{  
 const farm= new Farm({name:'Full Belly Farms',city:'Guinda, CA'})
-const melon= await product.findOne({name:'Goddess Melon'})
+const melon= await Product.findOne({name:'Goddess Melon'})
 farm.products.push(melon)
 console.log(farm)
 }
@@ -53,3 +53,9 @@ const addProduct= async()=>{
 }
 
 addProduct()
+
+
+farm.findOne({name:'Full Belly Farms'}).then(farm=>{console.log(farm)})
+// before adding popular we were just getting object ids, now we're getting all the information about the products available
+.populate('products')
+.then(farm=>console.log(farm))
