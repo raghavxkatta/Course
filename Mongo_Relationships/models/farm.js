@@ -24,22 +24,24 @@ mongoose
         name:String,
         city:String,
         /* the type needs to be mongoose object id and in mongoose to type out object id we need to write full mongoose.schema.types.objectID */
-        products:[{type: Schema.Types.ObjectId, ref:'Product' }]
+        products:[{type: Schema.Types.ObjectId, ref:'Product' }]/* ref:product basically estabilishes a relationship with the product model, so we can populate this field with details of the referenced product later */
     })
 
     const Product= mongoose.model('Product', productSchema)
     const Farm= mongoose.model('Farm', farmSchema)
 
+    /* adding multiple products at once */
     Product.insertMany([
         {name:'Goddess Melon',price:4.99,season:'Summer'},
         {name:'Sugar Baby Watermelon',price:4.99,season:'Summer'},
         {name:'Asparagus',price:3.99,season:'Spring'}
     ]).then(()=>console.log("Products inserted"))       
 
+    /* creating a farm document */
 const makeFarm= async()=>{  
 const farm= new Farm({name:'Full Belly Farms',city:'Guinda, CA'})
 const melon= await Product.findOne({name:'Goddess Melon'})
-farm.products.push(melon)
+farm.products.push(melon)/* adds the product id of Goddess Melon to the products array */
 console.log(farm)
 }
 makeFarm()
@@ -56,6 +58,6 @@ addProduct()
 
 
 farm.findOne({name:'Full Belly Farms'}).then(farm=>{console.log(farm)})
-// before adding popular we were just getting object ids, now we're getting all the information about the products available
+// before adding popular we were just getting object ids, now we're getting all the information about the products available in the products array of farms
 .populate('products')
-.then(farm=>console.log(farm))
+.then(farm=>console.log(farm))                                                                                                          
