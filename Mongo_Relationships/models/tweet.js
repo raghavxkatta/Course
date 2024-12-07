@@ -30,7 +30,9 @@ mongoose
 //         makeTweets();
 
 const findTweet= async()=>{
-    const t= await Tweet.find({}).populate('user')
+    /* SAARE TWEETS KO DHOONDHKE POPULATE KARNA WITH USER KI INFO UNKI ID KI JAGAH */
+    const t= await Tweet.find({}).populate('user')/* THIS IS USED TO REPLACE THE USER FIELD IN EACH TWEET WITH THE FULL USER OBJECT REFERENCES 
+    WITHOUT POPULATE YOU WOULD ONLY SEE THE UUSER'S ID WITH .POPULATE() YOU GET THE DETAILS LIKE USERNAME AND AGE OF THE USER LINKED TO THE TWEET*/
     console.log(t)
 }
 findTweet();
