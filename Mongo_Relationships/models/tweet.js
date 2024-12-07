@@ -30,7 +30,7 @@ mongoose
 //         makeTweets();
 
 const findTweet= async()=>{
-    const t= await Tweet.findOne({}).populate('user')
+    const t= await Tweet.find({}).populate('user')
     console.log(t)
 }
 findTweet();
