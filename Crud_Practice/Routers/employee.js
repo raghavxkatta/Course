@@ -47,7 +47,7 @@ const updatedEmployee= await Employee.findByIdAndUpdate(req.params.id,
         tech: req.body.tech,
         subscription: req.body.subscription,
     },
-    {new:true}
+    {new:true}/* so that the new item gets updated */
 )
 res.json(updatedEmployee)
     }

@@ -1,7 +1,5 @@
 const mongoose= require('mongoose')
 
-
-
 const alienSchema= new mongoose.Schema({
 
     name:{
