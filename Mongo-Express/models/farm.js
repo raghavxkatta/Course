@@ -1,5 +1,4 @@
 const mongoose=require('mongoose')
-const Farm=mongoose.model('Farm',farmSchema)
 const { Schema }=  mongoose /* destructuring so that don't have to include mongoose.schema everywhere */
 
 
@@ -18,8 +17,9 @@ const farmSchema=new Schema({
     },
     products:{
         type:Schema.Types.ObjectId,
-        ref:'product'
-            }
+        ref:'Product'
+    }
 })
 
+const Farm=mongoose.model('Farm',farmSchema)
 module.exports= Farm

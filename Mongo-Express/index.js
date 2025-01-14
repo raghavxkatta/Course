@@ -15,7 +15,7 @@ const path = require('path')
 const Product = require('./models/product')/*basically Product is productSchema AND WOULD HELP YOU TO DO CRUD DOCUMENTS FROM THE PRODUCT COLLECTION*/
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');/* Need to require this so that we are able to update items with put or patch request even though we are using forms */
-const Farm = require('./models/farm');
+const Farm = require('./models/farms');
 const req = require('express/lib/request');
 mongoose.connect('mongodb://127.0.0.1:27017/farmStand')
 .then(() => {
@@ -33,26 +33,61 @@ app.use(methodOverride('_method'))
 
 
 /* Farm Routes */
-app.get('/farm/new',(req,res)=>{
-    res.render('/farm/new',{Farm})
+
+/* Route to display all farms */
+app.get('/farms',async(req,res)=>{
+    const farms = await find({})
+    res.render('farms/index',{farms})
 })
 
-app.post('/farm/'(req,res)=>{
-    res.render
+/* newProduct Route */
+app.get('/farms/new',(req,res)=>{
+    res.render('farm/new',{Farm})
+})
+
+/*Form for new Product  */
+app.post('/farms',async(req,res)=>{
+    const newFarm = new Farm(req.body)
+    await newFarm.save()
+    console.log(newFarm)
+    res.redirect(`/farm/${newFarm._id}`)
+})
+
+/* Route to display a single Route */
+app.get('/farm/:id',async(req,res)=>{
+    const {id}=req.params
+    const foundFarm= await Farm.findById(id)
+    console.log(foundFarm)
+    res.render('/farms/show',{farm:foundFarm})
+})
+
+/* Route to update an existing product */
+app.get('/farm/:id/edit',async(req,res)=>{/* we have to have this get route becase w/o this the user will not get prefilled info whhile editing */
+const {id}=req.params
+const foundFarm=await Product.findById(id)
+})
+app.put('/farm/:id/edit',async(req,res)=>{
+    const updatedFarm = Product.findByIdAndUpdate(id,req.params,)
 })
 
 
 
 
 
-
-/* Product Routes */
+//  Product Routes 
 const categories = ['vegetable', 'fruit', 'dairy', 'baked goods']
 
 app.get('/products/new', (req, res) => {/* since we don't have to do anything asynchronus here that's why we don't add async and await */
 res.render('products/new', { categories })/* .get is when the express checks if that particular url has a .get route and then runs it's code. res.render is to create a webpage using a template */
 })
 
+// Route to create a new product
+app.post('/products', async (req, res) => {/* well in this case we don't have access to req.body, I mean we do but it's just undefined, there's nothing there it needs to be parsed */
+const newProduct = new Product(req.body)/* the data that we submit in the "new " route, when we click submit it is going to create a new product using that data */
+await newProduct.save()
+console.log(newProduct)
+res.redirect(`/products/${newProduct._id}`)/* this will redirect to the page which will have the data of the new product we just entered */
+})
 
 // Route to display a single product
 app.get('/products/:id', async (req, res) => {/* we could have taken name as part of the url but because some names can be same and that can be problematic, we don't take it*/
@@ -65,13 +100,6 @@ res.render('products/show', { product: foundProduct })/* you need to pass the ar
 
 
 
-// Route to display the form for editing an existing product
-app.post('/products', async (req, res) => {/* well in this case we don't have access to req.body, I mean we do but it's just undefined, there's nothing there it needs to be parsed */
-const newProduct = new Product(req.body)/* the data that we submit in the "new " route, when we click submit it is going to create a new product using that data */
-await newProduct.save()
-console.log(newProduct)
-res.redirect(`/products/${newProduct._id}`)/* this will redirect to the page which will have the data of the new product we just entered */
-})
 
 
 
@@ -84,10 +112,15 @@ res.render('products/edit', { product, categories })
 app.put('/products/:id/edit', async (req, res) => {/* PUT AND PATCH REQUESTS ARE USED TO UPDATE EXISTING DATA */
 const { id } = req.params/* THE PROBLEM IS THAT WE CAN'T ACTUALLY MAKE A PUT OR A PATCH REQUEST FROM A FORM, THE REASON WHY WE USED methodOverride */
 const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })/* runValidators because mongoose methods forgoes the validators */
-// Alternate way to do the above:
 
+// Alternate way to do the above:
 res.redirect(`/products/${product._id}`)/* we could have just referenced id but that would have broke the code because there is a await in the former line and therefore we have added product._id so that it awaits until product is found and then redirects */
 })
+
+
+
+
+/* Route to delete a product */
 app.delete('/products/:id', async (req, res) => {/* so now because of method override we can now add DELETE request in an HTML file */
 const { id } = req.params;
 const deletedProduct = await Product.findByIdAndDelete(id)
@@ -105,6 +138,8 @@ const products= await Product.find({})
 }
 res.render('products/index',{products,category:category||'All'})
 })
+
+
 
 
 app.listen(3000, () => {

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const {Schema}=mongoose
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -11,7 +12,7 @@ const productSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        lowerCase: true,/* in case the person types Fruits because enum mein small f hai  */
+        lowercase: true,/* in case the person types Fruits because enum mein small f hai  */
         enum: ['fruit', 'vegetable', 'dairy']
     },
     farm:{
