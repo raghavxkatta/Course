@@ -15,6 +15,7 @@ const farmSchema=new Schema({
         type:String,
         required:[true,'Email required']
     },
+    /* This is a one-one relationship as both of them are not in an array */
     products:{
         type:Schema.Types.ObjectId,
         ref:'Product'

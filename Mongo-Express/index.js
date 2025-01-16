@@ -40,21 +40,37 @@ app.get('/farms',async(req,res)=>{
     res.render('farms/index',{farms})
 })
 
-/* newProduct Route */
+/* Route to add new Product  */
 app.get('/farms/new',(req,res)=>{
-    res.render('farm/new',{Farm})
+    res.render('farms/new',{Farm})
 })
 
-/*Form for new Product  */
+/*Route for Form for new Product  */
 app.post('/farms',async(req,res)=>{
     const newFarm = new Farm(req.body)
     await newFarm.save()
     console.log(newFarm)
     res.redirect(`/farm/${newFarm._id}`)
 })
-
+/* Route to add a product and relate it to a farm */
+app.get('/farms/:_id/products/new',async(req,res)=>{
+    const {id}=req.params
+    const farm =await farm.findById(id)/* so that we can add the farm name while adding a new product */
+    res.render('products/new',{categories,id,farm})
+})
+app.post('/farms/:id/products',async(req,res)=>{
+    const {id}=req.params
+    const farm =await farm.findById(id)
+    const {name,price,category}=req.body
+    const product= new Product({name,price,category})
+    farm.products.push(product)/* Product will be added to the product list of the farm */
+    await farm.save()
+    products.farm=farm/* products ke farm waali field mein iss farm ko store kar rhe, cuz yeh dono ki collection mein dikhna chahiye na */
+    await product.save()
+    res.redirect(`/farms/${farm._id}`)
+})
 /* Route to display a single Route */
-app.get('/farm/:id',async(req,res)=>{
+app.get('/farms/:id',async(req,res)=>{
     const {id}=req.params
     const foundFarm= await Farm.findById(id)
     console.log(foundFarm)
@@ -92,7 +108,7 @@ res.redirect(`/products/${newProduct._id}`)/* this will redirect to the page whi
 // Route to display a single product
 app.get('/products/:id', async (req, res) => {/* we could have taken name as part of the url but because some names can be same and that can be problematic, we don't take it*/
 const { id } = req.params/* req.params is used when you want to extract something from the url basically {destructuring the ID from the request parameter} */
-const foundProduct = await Product.findById(id)
+const foundProduct = await Product.findById(id).populate('farm','name')
 console.log(foundProduct)
 res.render('products/show', { product: foundProduct })/* you need to pass the array that you will use in the particular file */
 
