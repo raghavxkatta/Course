@@ -25,16 +25,17 @@ const farmSchema=new Schema({
 
 // Document Middlewares
 
-/* This is a pre-middleware function and runs before a document is deleted */
-farmSchema.pre('deleteOne',async function(data){
-    console.log("PRE MIDDLEWARE")
-    console.log(data)
+// So now what we're trying to do is that we want to delete the farm but we also want to delete all the products associated with the farm and we'll console.log all the deleted products after they're deleted 
+
+/* This is a post-middleware function and runs after a document is deleted */
+farmSchema.post('findOneAndDelete',async function(farm){/* the farm parameter allows us to access fields like farm.products */
+    /* checks if farm.products is an empty array or not, so ensuring that array has atleast one element */
+    if(farm.products.length){
+        const res=await Product.deleteMany({_id: {$in: farm.products}})
+        console.log(res)
+    }
 })
-/* This is a post-middleware function and runs before a document is deleted */
-farmSchema.post('findOneAndDelete',async function(data){
-    console.log("POST MIDDLEWARE")
-    console.log(data)
-})
+
 
 const Farm=mongoose.model('Farm',farmSchema)
 
