@@ -1,4 +1,5 @@
 const mongoose=require('mongoose')
+const Product= require('./product')
 const { Schema }=  mongoose /* destructuring so that don't have to include mongoose.schema everywhere */
 
 
@@ -22,5 +23,20 @@ const farmSchema=new Schema({
     }
 })
 
+// Document Middlewares
+
+/* This is a pre-middleware function and runs before a document is deleted */
+farmSchema.pre('deleteOne',async function(data){
+    console.log("PRE MIDDLEWARE")
+    console.log(data)
+})
+/* This is a post-middleware function and runs before a document is deleted */
+farmSchema.post('findOneAndDelete',async function(data){
+    console.log("POST MIDDLEWARE")
+    console.log(data)
+})
+
 const Farm=mongoose.model('Farm',farmSchema)
+
+
 module.exports= Farm

@@ -9,6 +9,11 @@ show.ejs=Template for displaying a single product */
 /* products-Variable holding an array of all product documents (e.g., used in the /products route). */
 /* product-Variable representing a single product document (e.g., used in the /products/:id route). */
 
+
+// Query Middlewares- where "This" refers to query
+// Document Middlwares- where "This" refers to document
+
+
 const express = require('express');
 const app = express();
 const path = require('path')
@@ -88,6 +93,13 @@ app.put('/farm/:id/edit',async(req,res)=>{
 
 
 
+/* Route to delete  */
+
+app.delete('/farms',async(req,res)=>{
+    console.log("Deleting...")
+    const farm= await Farm.findByIdAndDelete(req.params.id)/* so since we've set middleware for findOneAndDelete it will run that even though here we're running findByIDandDelete */
+    res.redirect('/farms')
+})
 
 
 //  Product Routes 
