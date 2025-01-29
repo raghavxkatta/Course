@@ -27,6 +27,7 @@ const farmSchema=new Schema({
 
 // So now what we're trying to do is that we want to delete the farm but we also want to delete all the products associated with the farm and we'll console.log all the deleted products after they're deleted 
 
+
 /* This is a post-middleware function and runs after a document is deleted */
 farmSchema.post('findOneAndDelete',async function(farm){/* the farm parameter allows us to access fields like farm.products */
     /* checks if farm.products is an empty array or not, so ensuring that array has atleast one element */

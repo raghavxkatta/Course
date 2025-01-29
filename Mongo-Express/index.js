@@ -20,7 +20,7 @@ const path = require('path')
 const Product = require('./models/product')/*basically Product is productSchema AND WOULD HELP YOU TO DO CRUD DOCUMENTS FROM THE PRODUCT COLLECTION*/
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');/* Need to require this so that we are able to update items with put or patch request even though we are using forms */
-const Farm = require('./models/farms');
+const Farm = require('./models/farm');
 const req = require('express/lib/request');
 mongoose.connect('mongodb://127.0.0.1:27017/farmStand')
 .then(() => {
@@ -41,7 +41,7 @@ app.use(methodOverride('_method'))
 
 /* Route to display all farms */
 app.get('/farms',async(req,res)=>{
-    const farms = await find({})
+    const farms = await Farm.find({})
     res.render('farms/index',{farms})
 })
 
@@ -60,7 +60,7 @@ app.post('/farms',async(req,res)=>{
 /* Route to add a product and relate it to a farm */
 app.get('/farms/:_id/products/new',async(req,res)=>{
     const {id}=req.params
-    const farm =await farm.findById(id)/* so that we can add the farm name while adding a new product */
+    const farm =await Farm.findById(id)/* so that we can add the farm name while adding a new product */
     res.render('products/new',{categories,id,farm})
 })
 app.post('/farms/:id/products',async(req,res)=>{
@@ -95,7 +95,7 @@ app.put('/farm/:id/edit',async(req,res)=>{
 
 /* Route to delete  */
 
-app.delete('/farms',async(req,res)=>{
+app.delete('/farms/:id',async(req,res)=>{
     console.log("Deleting...")
     const farm= await Farm.findByIdAndDelete(req.params.id)/* so since we've set middleware for findOneAndDelete it will run that even though here we're running findByIDandDelete */
     res.redirect('/farms')
