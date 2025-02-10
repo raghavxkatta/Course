@@ -1,4 +1,7 @@
-/* Learnig How to send and parse cookies from User */
+/* Learning How to send and parse cookies from User */
+
+
+/* There is something */
 
 const express= require('express')
 const app = express()
