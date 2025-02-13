@@ -6,6 +6,8 @@
 const express= require('express')
 const app = express()
 const cookieParser=require ('cookie-parser')
+
+
 /* Cookie Parser will now use this to check, it will basically compare the cookie that user sent with what the client stored */
 app.use(cookieParser('thisismysecret'))
 app.get('/greet',(req,res)=>{
