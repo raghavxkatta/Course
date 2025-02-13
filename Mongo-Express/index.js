@@ -14,6 +14,8 @@ show.ejs=Template for displaying a single product */
 // Document Middlwares- where "This" refers to document
 
 
+/* Flash messages are quickly gone once the webpage refreshes  */
+
 const express = require('express');
 const app = express();
 const path = require('path')
@@ -38,7 +40,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs')
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
-
+app.use((req,res,next)=>{
+res.locals.messages=req.flash('success')
+next()
+})
 
 
 /* Farm Routes */
@@ -47,7 +52,7 @@ app.use(methodOverride('_method'))
 app.get('/farms',async(req,res)=>{
     const farms = await Farm.find({})
     /* because we were redirected here by the post route that's why the flash thingy */
-    res.render('farms/index',{farms,message:req.flash('success')})
+    res.render('farms/index',{farms})
 })
 
 /* Route to add new Product  */
