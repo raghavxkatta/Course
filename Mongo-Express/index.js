@@ -22,6 +22,10 @@ const mongoose = require('mongoose');
 const methodOverride = require('method-override');/* Need to require this so that we are able to update items with put or patch request even though we are using forms */
 const Farm = require('./models/farm');
 const req = require('express/lib/request');
+const session=require('express-session')
+const flash =require('connect-flash')
+
+
 mongoose.connect('mongodb://127.0.0.1:27017/farmStand')
 .then(() => {
 console.log("Mongo connection open!!!");
@@ -42,7 +46,8 @@ app.use(methodOverride('_method'))
 /* Route to display all farms */
 app.get('/farms',async(req,res)=>{
     const farms = await Farm.find({})
-    res.render('farms/index',{farms})
+    /* because we were redirected here by the post route that's why the flash thingy */
+    res.render('farms/index',{farms,message:req.flash('success')})
 })
 
 /* Route to add new Product  */
@@ -55,6 +60,8 @@ app.post('/farms',async(req,res)=>{
     const newFarm = new Farm(req.body)
     await newFarm.save()
     console.log(newFarm)
+    /* Flash mesasges always just before redirect messages */
+    req.flash('success','Successfully made a new farm')
     res.redirect(`/farm/${newFarm._id}`)
 })
 /* Route to add a product and relate it to a farm */
@@ -65,7 +72,7 @@ app.get('/farms/:_id/products/new',async(req,res)=>{
 })
 app.post('/farms/:id/products',async(req,res)=>{
     const {id}=req.params
-    const farm =await farm.findById(id)
+    const farm =await Farm.findById(id)
     const {name,price,category}=req.body
     const product= new Product({name,price,category})
     farm.products.push(product)/* Product will be added to the product list of the farm */
@@ -79,7 +86,7 @@ app.get('/farms/:id',async(req,res)=>{
     const {id}=req.params
     const foundFarm= await Farm.findById(id)
     console.log(foundFarm)
-    res.render('/farms/show',{farm:foundFarm})
+    res.render('farms/show',{farm:foundFarm})
 })
 
 /* Route to update an existing product */
